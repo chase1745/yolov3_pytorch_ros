@@ -5,9 +5,9 @@
   <description>Road sign recognition ROS package. CSCE 482 Capstone.</description>
 
   <maintainer email="chasemcd1745@tamu.edu">Chase McDermott</maintainer>
-  <maintainer>Joey Whitmore</maintainer>
+  <!-- <maintainer>Joey Whitmore</maintainer>
   <maintainer>Wilson Kahlich</maintainer>
-  <maintainer>Travis Teeter</maintainer>
+  <maintainer>Travis Teeter</maintainer> -->
 
   <license>BSD</license>
 
