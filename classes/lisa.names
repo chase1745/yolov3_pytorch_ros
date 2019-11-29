@@ -1,0 +1,12 @@
+cone
+stop
+speedLimit25
+pedestrianCrossing
+turnLeft
+speedLimit15
+rightLaneMustTurn
+speedLimit30
+yield
+noRightTurn
+noLeftTurn
+turnRight

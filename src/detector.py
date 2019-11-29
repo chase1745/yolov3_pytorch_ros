@@ -35,7 +35,7 @@ class DetectorManager():
     def __init__(self):
         # Load weights parameter
         weights_name = rospy.get_param('~weights_name', 'yolov3.weights')
-        self.weights_path = os.path.join(package_path, 'models', weights_name)
+        self.weights_path = os.path.join(package_path, 'weights', weights_name)
         rospy.loginfo("Found weights, loading %s", self.weights_path)
 
         # Raise error if it cannot find the model
@@ -53,24 +53,26 @@ class DetectorManager():
 
         # Load other parameters
         config_name = rospy.get_param('~config_name', 'yolov3.cfg')
-        self.config_path = os.path.join(package_path, 'config', config_name)
+        self.config_path = os.path.join(package_path, 'cfg', config_name)
         classes_name = rospy.get_param('~classes_name', 'coco.names')
         self.classes_path = os.path.join(package_path, 'classes', classes_name)
         self.gpu_id = rospy.get_param('~gpu_id', 0)
         self.network_img_size = rospy.get_param('~img_size', 416)
         self.publish_image = rospy.get_param('~publish_image')
-        
+
         # Initialize width and height
         self.h = 0
         self.w = 0
-        
+
         # Load net
         self.model = Darknet(self.config_path, img_size=self.network_img_size)
         self.model.load_weights(self.weights_path)
         if torch.cuda.is_available():
+            self.use_cuda = True
             self.model.cuda()
         else:
-            raise IOError('CUDA not found.')
+            self.use_cuda = False
+
         self.model.eval() # Set in evaluation mode
         rospy.loginfo("Deep neural network loaded")
 
@@ -80,7 +82,7 @@ class DetectorManager():
         # Load classes
         self.classes = load_classes(self.classes_path) # Extracts class labels from file
         self.classes_colors = {}
-        
+
         # Define subscribers
         self.image_sub = rospy.Subscriber(self.image_topic, Image, self.imageCb, queue_size = 1, buff_size = 2**24)
 
@@ -106,13 +108,16 @@ class DetectorManager():
 
         # Configure input
         input_img = self.imagePreProcessing(self.cv_image)
-        input_img = Variable(input_img.type(torch.cuda.FloatTensor))
-        
+        if self.use_cuda:
+            input_img = Variable(input_img.type(torch.cuda.FloatTensor))
+        else:
+            input_img = Variable(input_img.type(torch.FloatTensor))
+
         # Get detections from network
         with torch.no_grad():
             detections = self.model(input_img)
             detections = non_max_suppression(detections, 80, self.confidence_th, self.nms_th)
-        
+
         # Parse detections
         if detections[0] is not None:
             for detection in detections[0]:
@@ -146,27 +151,27 @@ class DetectorManager():
         if (self.publish_image):
             self.visualizeAndPublish(detection_results, self.cv_image)
         return True
-    
+
 
     def imagePreProcessing(self, img):
         # Extract image and shape
         img = np.copy(img)
         img = img.astype(float)
         height, width, channels = img.shape
-        
+
         if (height != self.h) or (width != self.w):
             self.h = height
             self.w = width
-            
+
             # Determine image to be used
             self.padded_image = np.zeros((max(self.h,self.w), max(self.h,self.w), channels)).astype(float)
-            
+
         # Add padding
         if (self.w > self.h):
             self.padded_image[(self.w-self.h)//2 : self.h + (self.w-self.h)//2, :, :] = img
         else:
             self.padded_image[:, (self.h-self.w)//2 : self.w + (self.h-self.w)//2, :] = img
-        
+
         # Resize and normalize
         input_img = resize(self.padded_image, (self.network_img_size, self.network_img_size, 3))/255.
 
@@ -201,7 +206,7 @@ class DetectorManager():
                 # Generate a new color if first time seen this label
                 color = np.random.randint(0,255,3)
                 self.classes_colors[label] = color
-            
+
             # Create rectangle
             cv2.rectangle(imgOut, (int(x_p1), int(y_p1)), (int(x_p3), int(y_p3)), (color[0],color[1],color[2]),thickness)
             text = ('{:s}: {:.3f}').format(label,confidence)

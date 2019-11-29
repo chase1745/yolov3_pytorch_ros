@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>yolov3_pytorch_ros</name>
+  <name>road_sign_recognition</name>
   <version>0.1.0</version>
-  <description>The YOLOv3 PyTorch ROS wrapper package</description>
+  <description>Road sign recognition ROS package. CSCE 482 Capstone.</description>
 
-  <maintainer email="vvasilo@seas.upenn.edu">Vasileios Vasilopoulos</maintainer>
-  <maintainer email="pavlakos@seas.upenn.edu">Georgios Pavlakos</maintainer>
+  <maintainer email="chasemcd1745@tamu.edu">Chase McDermott</maintainer>
+  <maintainer>Joey Whitmore</maintainer>
+  <maintainer>Wilson Kahlich</maintainer>
+  <maintainer>Travis Teeter</maintainer>
 
   <license>BSD</license>
 
