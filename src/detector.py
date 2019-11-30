@@ -34,7 +34,7 @@ from utils.utils import *
 class DetectorManager():
     def __init__(self):
         # Load weights parameter
-        weights_name = rospy.get_param('weights_name', 'yolov3.weights')
+        weights_name = rospy.get_param('~weights_name', 'yolov3.weights')
         self.weights_path = os.path.join(package_path, 'weights', weights_name)
         rospy.loginfo("Found weights, loading %s", self.weights_path)
 
@@ -43,21 +43,21 @@ class DetectorManager():
             raise IOError(('{:s} not found.').format(self.weights_path))
 
         # Load image parameter and confidence threshold
-        self.image_topic = rospy.get_param('image_topic', '/camera/rgb/image_raw')
-        self.confidence_th = rospy.get_param('confidence', 0.7)
-        self.nms_th = rospy.get_param('nms_th', 0.3)
+        self.image_topic = rospy.get_param('~image_topic', '/camera/rgb/image_raw')
+        self.confidence_th = rospy.get_param('~confidence', 0.7)
+        self.nms_th = rospy.get_param('~nms_th', 0.3)
 
         # Load publisher topics
-        self.detected_objects_topic = rospy.get_param('detected_objects_topic')
-        self.published_image_topic = rospy.get_param('detections_image_topic')
+        self.detected_objects_topic = rospy.get_param('~detected_objects_topic')
+        self.published_image_topic = rospy.get_param('~detections_image_topic')
 
         # Load other parameters
-        config_name = rospy.get_param('config_name', 'yolov3.cfg')
+        config_name = rospy.get_param('~config_name', 'yolov3.cfg')
         self.config_path = os.path.join(package_path, 'cfg', config_name)
-        classes_name = rospy.get_param('classes_name', 'coco.names')
+        classes_name = rospy.get_param('~classes_name', 'coco.names')
         self.classes_path = os.path.join(package_path, 'classes', classes_name)
-        self.gpu_id = rospy.get_param('gpu_id', 0)
-        self.network_img_size = rospy.get_param('img_size', 416)
+        self.gpu_id = rospy.get_param('~gpu_id', 0)
+        self.network_img_size = rospy.get_param('~img_size', 416)
         self.publish_image = rospy.get_param('~publish_image')
 
         # Initialize width and height
