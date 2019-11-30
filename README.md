@@ -1,20 +1,17 @@
 # yolov3_pytorch_ros
 This package provides a ROS wrapper for [YOLOv3](https://pjreddie.com/darknet/yolo) based on [PyTorch-YOLOv3](https://github.com/eriklindernoren/PyTorch-YOLOv3). For consistency, the [messages](msg) are based on the [darknet_ros](https://github.com/leggedrobotics/darknet_ros) package. The package has been tested with Ubuntu 16.04 and ROS Kinetic on a NVIDIA Jetson TX2.
 
-**Authors**: Vasileios Vasilopoulos (<vvasilo@seas.upenn.edu>), Georgios Pavlakos (<pavlakos@seas.upenn.edu>)
-
-**Affiliation**: [University of Pennsylvania, GRASP Lab](https://www.grasp.upenn.edu)
 
 ## Prerequisites
 To download the prerequisites for this package (except for ROS itself), navigate to the package folder and run:
 ```
-$ sudo pip install -r requirements.txt
+$ sudo pip3 install -r requirements.txt
 ```
 
 ## Installation
 Navigate to your catkin workspace and run:
 ```
-$ catkin build yolov3_pytorch_ros
+$ catkin_make
 ```
 
 ## Basic Usage
