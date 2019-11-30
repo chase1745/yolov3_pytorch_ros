@@ -95,6 +95,7 @@ class DetectorManager():
         rospy.spin()
 
     def imageCb(self, data):
+        rospy.loginfo("Image pulled from topic.")
         # Convert the image to OpenCV
         try:
             self.cv_image = self.bridge.imgmsg_to_cv2(data, "rgb8")
@@ -120,6 +121,7 @@ class DetectorManager():
 
         # Parse detections
         if detections[0] is not None:
+            rospy.loginfo("Detected {} objects.".format(len(detections[0])))
             for detection in detections[0]:
                 # Get xmin, ymin, xmax, ymax, confidence and class
                 xmin, ymin, xmax, ymax, _, conf, det_class = detection
@@ -140,6 +142,8 @@ class DetectorManager():
                 detection_msg.ymax = ymax_unpad
                 detection_msg.probability = conf
                 detection_msg.Class = self.classes[int(det_class)]
+
+                rospy.loginfo("Class: " + self.classes[int(det_class)])
 
                 # Append in overall detection message
                 detection_results.bounding_boxes.append(detection_msg)
