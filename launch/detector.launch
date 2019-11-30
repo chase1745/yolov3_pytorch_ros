@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
     <!-- Camera topic and weights, config and classes files -->
-    <arg name="image_topic"	                default="/camera/rgb_color"/>
+    <arg name="image_topic"	                default="/sensor_msgs/Image"/>
     <arg name="weights_name"	            default="yolo-lisa_best.weights"/>
     <arg name="config_name"	                default="yolo-lisa.cfg"/>
     <arg name="classes_name"	            default="lisa.names"/>
