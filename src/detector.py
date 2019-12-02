@@ -112,6 +112,7 @@ class DetectorManager():
         detection_results = BoundingBoxes()
         detection_results.header = imageData.header
         detection_results.image_header = imageData.header
+        rospy.loginfo("Timestamp: " + str(imageData.header.stamp))
 
         # Configure input
         input_img = self.imagePreProcessing(self.cv_image)
