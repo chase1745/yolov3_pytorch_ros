@@ -154,8 +154,9 @@ class DetectorManager():
 
                 # Get distance
                 P = cameraInfo.P
-                fx = P[0][0]
-                fy = P[1][1]
+                print(P)
+                fx = P[0]
+                fy = P[5]
                 bx = xmax - xmin
                 by = ymax - ymin
                 distance = calc_distance(fx, fy, bx, by, class_str)
