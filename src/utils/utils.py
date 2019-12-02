@@ -14,7 +14,7 @@ def calc_distance(fx, fy, bx, by, id):
     focal = (fx + fy) / 2
     real_height = 0
 
-    if (id == "stop") #stop sign
+    if (id == "stop"): #stop sign
         real_height = 2.461
     elif (id == "speedLimit15" or id == "speedLimit25" or id == "speedLimit30") : #speed limit 15, 25, 30
         real_height = 2
