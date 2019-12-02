@@ -157,7 +157,8 @@ class DetectorManager():
                 fy = P[1][1]
                 bx = xmax - xmin
                 by = ymax - ymin
-                calc_distance(fx, fy, bx, by, class_str)
+                distance = calc_distance(fx, fy, bx, by, class_str)
+                rospy.loginfo("Distance: {}".format(distance))
                 # Append in overall detection message
                 detection_results.bounding_boxes.append(detection_msg)
 
