@@ -2,6 +2,7 @@
 <launch>
     <!-- Camera topic and weights, config and classes files -->
     <arg name="image_topic"	                default="/sensor_msgs/Image"/>
+    <arg name="camera_info_topic"	        default="/sensor_msgs/CameraInfo"/>
     <arg name="weights_name"	            default="yolo-lisa_best.weights"/>
     <arg name="config_name"	                default="yolo-lisa.cfg"/>
     <arg name="classes_name"	            default="lisa.names"/>
@@ -17,6 +18,7 @@
     <!-- Node -->
     <node name="detector_manager" pkg="yolov3_pytorch_ros" type="detector.py" output="screen" respawn="true">
         <param name="image_topic"               value="$(arg image_topic)"/>
+        <param name="camera_info_topic"         value="$(arg camera_info_topic)"/>
         <param name="weights_name"              value="$(arg weights_name)"/>
         <param name="config_name"               value="$(arg config_name)"/>
         <param name="classes_name"              value="$(arg classes_name)"/>
