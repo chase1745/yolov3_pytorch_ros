@@ -11,9 +11,10 @@ from skimage.transform import resize
 # ROS imports
 import rospy
 import std_msgs.msg
+import message_filters
 from rospkg import RosPack
 from std_msgs.msg import UInt8
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CameraInfo
 from geometry_msgs.msg import Polygon, Point32
 from yolov3_pytorch_ros.msg import BoundingBox, BoundingBoxes
 from cv_bridge import CvBridge, CvBridgeError
@@ -84,7 +85,11 @@ class DetectorManager():
         self.classes_colors = {}
 
         # Define subscribers
-        self.image_sub = rospy.Subscriber(self.image_topic, Image, self.imageCb, queue_size = 1, buff_size = 2**24)
+        self.image_sub = message_filters.Subscriber(self.image_topic, Image, queue_size = 1, buff_size = 2**24)
+        self.info_sub = message_filters.Subscriber(self.camera_info_topic, CameraInfo, queue_size = 1, buff_size = 2**24)
+
+        ts = message_filters.TimeSynchronizer([self.image_sub, self.info_sub], 10)
+        ts.registerCallback(imageCb)
 
         # Define publishers
         self.pub_ = rospy.Publisher(self.detected_objects_topic, BoundingBoxes, queue_size=10)
@@ -94,18 +99,18 @@ class DetectorManager():
         # Spin
         rospy.spin()
 
-    def imageCb(self, data):
+    def imageCb(self, imageData, cameraInfo):
         rospy.loginfo("Image pulled from topic.")
         # Convert the image to OpenCV
         try:
-            self.cv_image = self.bridge.imgmsg_to_cv2(data, "rgb8")
+            self.cv_image = self.bridge.imgmsg_to_cv2(imageData, "rgb8")
         except CvBridgeError as e:
             print(e)
 
         # Initialize detection results
         detection_results = BoundingBoxes()
-        detection_results.header = data.header
-        detection_results.image_header = data.header
+        detection_results.header = imageData.header
+        detection_results.image_header = imageData.header
 
         # Configure input
         input_img = self.imagePreProcessing(self.cv_image)
@@ -133,6 +138,7 @@ class DetectorManager():
                 xmax_unpad = ((xmax-xmin)/unpad_w)*self.w + xmin_unpad
                 ymin_unpad = ((ymin-pad_y//2)/unpad_h)*self.h
                 ymax_unpad = ((ymax-ymin)/unpad_h)*self.h + ymin_unpad
+                class_str = self.classes[int(det_class)]
 
                 # Populate darknet message
                 detection_msg = BoundingBox()
@@ -141,10 +147,17 @@ class DetectorManager():
                 detection_msg.ymin = ymin_unpad
                 detection_msg.ymax = ymax_unpad
                 detection_msg.probability = conf
-                detection_msg.Class = self.classes[int(det_class)]
+                detection_msg.Class = class_str
 
-                rospy.loginfo("Class: " + self.classes[int(det_class)])
+                rospy.loginfo("Class: " + class_str)
 
+                # Get distance
+                P = cameraInfo.P
+                fx = P[0][0]
+                fy = P[1][1]
+                bx = xmax - xmin
+                by = ymax - ymin
+                calc_distance(fx, fy, bx, by, class_str)
                 # Append in overall detection message
                 detection_results.bounding_boxes.append(detection_msg)
 
