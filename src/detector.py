@@ -72,7 +72,9 @@ class DetectorManager():
         if torch.cuda.is_available():
             self.use_cuda = True
             self.model.cuda()
+            rospy.loginfo("Using CUDA for deep learning.")
         else:
+            rospy.loginfo("CUDA not found, using CPU...")
             self.use_cuda = False
 
         self.model.eval() # Set in evaluation mode
