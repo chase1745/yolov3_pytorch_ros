@@ -10,31 +10,31 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-def calc_distance(fx, fy, bx, by, id) :
-	var focal = (fx + fy) / 2
-	var real_height = 0
-	
-	if (id == "stop") #stop sign
-		real_height = 2.461
-	elif (id == "speedLimit15" or id == "speedLimit25" or id == "speedLimit30") : #speed limit 15, 25, 30 
-		real_height = 2
-	elif (id == "pedestrianCrossing" ) : #pedestrian crossing
-		real_height = 1.5
-	elif (id == "turnLeft") : #turn left
-		real_height = 2
-	elif (id == "turnRight") : #turn right
-		real_height = 2
-	elif (id == "rightLaneMustTurn") : #right lane must turn
-		real_height = 2.5
-	elif (id == "yield") : #yield
-		real_height = 2.598
-	elif (id == "noRightTurn") : #no right turn
-		real_height = 2
-	elif (id == "noLeftTurn") : #no left turn
-		real_height = 2
-		
-		var distance = (real_height / by) * focal
-	return distance
+def calc_distance(fx, fy, bx, by, id):
+    focal = (fx + fy) / 2
+    real_height = 0
+
+    if (id == "stop") #stop sign
+        real_height = 2.461
+    elif (id == "speedLimit15" or id == "speedLimit25" or id == "speedLimit30") : #speed limit 15, 25, 30
+        real_height = 2
+    elif (id == "pedestrianCrossing" ) : #pedestrian crossing
+        real_height = 1.5
+    elif (id == "turnLeft") : #turn left
+        real_height = 2
+    elif (id == "turnRight") : #turn right
+        real_height = 2
+    elif (id == "rightLaneMustTurn") : #right lane must turn
+        real_height = 2.5
+    elif (id == "yield") : #yield
+        real_height = 2.598
+    elif (id == "noRightTurn") : #no right turn
+        real_height = 2
+    elif (id == "noLeftTurn") : #no left turn
+        real_height = 2
+
+    distance = (real_height / by) * focal
+    return distance
 
 def load_classes(path):
     """
