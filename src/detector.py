@@ -45,7 +45,7 @@ class DetectorManager():
 
         # Load image parameter and confidence threshold
         self.image_topic = rospy.get_param('~image_topic', '/camera/rgb/image_raw')
-        self.image_topic = rospy.get_param('~camera_info_topic', '/camera/rgb/image_raw')
+        self.camera_info_topic = rospy.get_param('~camera_info_topic', '/camera/rgb/image_raw')
         self.confidence_th = rospy.get_param('~confidence', 0.7)
         self.nms_th = rospy.get_param('~nms_th', 0.3)
 
