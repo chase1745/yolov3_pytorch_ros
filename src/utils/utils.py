@@ -10,6 +10,31 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
+def calc_distance(fx, fy, bx, by, id) :
+	var focal = (fx + fy) / 2
+	var real_height = 0
+	
+	if (id == 1) #stop sign
+		real_height = 2.461
+	elif (id == 2 or id == 3 or id == 4) : #speed limit 15, 25, 30 
+		real_height = 2
+	elif (id == 5) : #pedestrian crossing
+		real_height = 1.5
+	elif (id == 6) : #turn left
+		real_height = 2
+	elif (id == 7) : #turn right
+		real_height = 2
+	elif (id == 8) : #right lane must turn
+		real_height = 2.5
+	elif (id == 9) : #yield
+		real_height = 2.598
+	elif (id == 10) : #no right turn
+		real_height = 2
+	elif (id == 11) : #no left turn
+		real_height = 2
+		
+		var distance = (real_height / by) * focal
+	return distance
 
 def load_classes(path):
     """
