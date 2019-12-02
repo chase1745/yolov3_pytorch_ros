@@ -14,23 +14,23 @@ def calc_distance(fx, fy, bx, by, id) :
 	var focal = (fx + fy) / 2
 	var real_height = 0
 	
-	if (id == 1) #stop sign
+	if (id == "stop") #stop sign
 		real_height = 2.461
-	elif (id == 2 or id == 3 or id == 4) : #speed limit 15, 25, 30 
+	elif (id == "speedLimit15" or id == "speedLimit25" or id == "speedLimit30") : #speed limit 15, 25, 30 
 		real_height = 2
-	elif (id == 5) : #pedestrian crossing
+	elif (id == "pedestrianCrossing" ) : #pedestrian crossing
 		real_height = 1.5
-	elif (id == 6) : #turn left
+	elif (id == "turnLeft") : #turn left
 		real_height = 2
-	elif (id == 7) : #turn right
+	elif (id == "turnRight") : #turn right
 		real_height = 2
-	elif (id == 8) : #right lane must turn
+	elif (id == "rightLaneMustTurn") : #right lane must turn
 		real_height = 2.5
-	elif (id == 9) : #yield
+	elif (id == "yield") : #yield
 		real_height = 2.598
-	elif (id == 10) : #no right turn
+	elif (id == "noRightTurn") : #no right turn
 		real_height = 2
-	elif (id == 11) : #no left turn
+	elif (id == "noLeftTurn") : #no left turn
 		real_height = 2
 		
 		var distance = (real_height / by) * focal
