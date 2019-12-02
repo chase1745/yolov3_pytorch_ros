@@ -86,8 +86,8 @@ class DetectorManager():
         self.classes_colors = {}
 
         # Define subscribers
-        self.image_sub = message_filters.Subscriber(self.image_topic, Image, queue_size = 1, buff_size = 2**24)
-        self.info_sub = message_filters.Subscriber(self.camera_info_topic, CameraInfo, queue_size = 1, buff_size = 2**24)
+        self.image_sub = message_filters.Subscriber(self.image_topic, Image)#, queue_size = 1, buff_size = 2**24)
+        self.info_sub = message_filters.Subscriber(self.camera_info_topic, CameraInfo)#, queue_size = 1, buff_size = 2**24)
 
         ts = message_filters.TimeSynchronizer([self.image_sub, self.info_sub], 10)
         ts.registerCallback(self.imageCb)
@@ -154,7 +154,6 @@ class DetectorManager():
 
                 # Get distance
                 P = cameraInfo.P
-                print(P)
                 fx = P[0]
                 fy = P[5]
                 bx = xmax - xmin
