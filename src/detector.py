@@ -163,14 +163,13 @@ class DetectorManager():
                     K = cameraInfo.K
                     fx = K[0]
                     fy = K[5]
-                bx = xmax_unpad- xmin_unpad
+                bx = xmax_unpad - xmin_unpad
                 by = ymax_unpad - ymin_unpad
                 distance = calc_distance(fx, fy, bx, by, class_str)
                 rospy.loginfo("Distance: {}".format(distance))
                 # So distance is shown instead of confidence
                 detection_msg.probability = distance
                 # Append in overall detection message
-                # if conf > self.confidence_th:
                 detection_results.bounding_boxes.append(detection_msg)
 
         # Publish detection results
@@ -237,10 +236,9 @@ class DetectorManager():
                 self.classes_colors[label] = color
 
             # Create rectangle
-            print "y height: {}, shape: {}".format(y_p3-y_p1, imgOut.shape)
             cv2.rectangle(imgOut, (int(x_p1), int(y_p1)), (int(x_p3), int(y_p3)), (color[0],color[1],color[2]),thickness)
             text = ('{:s}: {:.3f}').format(label,confidence)
-            cv2.putText(imgOut, text, (int(x_p1), int(y_p1-20)), font, fontScale, (255,255,255), thickness ,cv2.LINE_AA)
+            cv2.putText(imgOut, text, (int(x_p1), int(y_p1+20)), font, fontScale, (255,255,255), thickness ,cv2.LINE_AA)
 
         # Publish visualization image
         image_msg = self.bridge.cv2_to_imgmsg(imgOut, "rgb8")
