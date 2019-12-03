@@ -163,8 +163,8 @@ class DetectorManager():
                     K = cameraInfo.K
                     fx = K[0]
                     fy = K[5]
-                bx = xmax - xmin
-                by = ymax - ymin
+                bx = xmax_unpad- xmin_unpad
+                by = ymax_unpad - ymin_unpad
                 distance = calc_distance(fx, fy, bx, by, class_str)
                 rospy.loginfo("Distance: {}".format(distance))
                 # So distance is shown instead of confidence
