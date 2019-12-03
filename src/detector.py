@@ -48,12 +48,6 @@ class DetectorManager():
         self.camera_info_topic = rospy.get_param('~camera_info_topic', '/camera/rgb/image_raw')
         self.confidence_th = rospy.get_param('~confidence', 0.7)
         self.nms_th = rospy.get_param('~nms_th', 0.3)
-        self.use_distance = rospy.get_param('~use_distance', True)
-        rospy.loginfo("use_distance: {}".format(self.use_distance))
-        if self.use_distance:
-            rospy.loginfo("NOT calculating distance")
-        else:
-            rospy.loginfo("Calculating distance")
 
         # Load publisher topics
         self.detected_objects_topic = rospy.get_param('~detected_objects_topic')
@@ -94,14 +88,12 @@ class DetectorManager():
         self.classes_colors = {}
 
         # Define subscribers
-        self.image_sub = message_filters.Subscriber(self.image_topic, Image, queue_size = 500, buff_size = 2**24)
-        if self.use_distance:
-            self.info_sub = message_filters.Subscriber(self.camera_info_topic, CameraInfo, queue_size = 1, buff_size = 2**24)
-        else:
-            self.info_sub = None
+        self.image_sub = rospy.Subscriber(self.image_topic, Image, self.imageCb, queue_size = 500, buff_size = 2**24)
+        # self.image_sub = message_filters.Subscriber(self.image_topic, Image, queue_size = 500, buff_size = 2**24)
+        # self.info_sub = message_filters.Subscriber(self.camera_info_topic, CameraInfo, queue_size = 1, buff_size = 2**24)
 
-        ts = message_filters.TimeSynchronizer([self.image_sub, self.info_sub], 10)
-        ts.registerCallback(self.imageCb)
+        # ts = message_filters.TimeSynchronizer([self.image_sub, self.info_sub], 10)
+        # ts.registerCallback(self.imageCb)
 
         # Define publishers
         self.pub_ = rospy.Publisher(self.detected_objects_topic, BoundingBoxes, queue_size=10)
