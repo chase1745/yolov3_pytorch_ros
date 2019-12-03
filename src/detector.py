@@ -157,16 +157,18 @@ class DetectorManager():
                 rospy.loginfo("Class: " + class_str)
 
                 # Get distance
-                if cameraInfo is not None:
-                    P = cameraInfo.P
-                    fx = P[0]
-                    fy = P[5]
-                    bx = xmax - xmin
-                    by = ymax - ymin
-                    distance = calc_distance(fx, fy, bx, by, class_str)
-                    rospy.loginfo("Distance: {}".format(distance))
-                    # So distance is shown instead of confidence
-                    detection_msg.probability = distance
+                if cameraInfo is None:
+                    fx, fy = 1109, 1109
+                else:
+                    K = cameraInfo.K
+                    fx = K[0]
+                    fy = K[5]
+                bx = xmax - xmin
+                by = ymax - ymin
+                distance = calc_distance(fx, fy, bx, by, class_str)
+                rospy.loginfo("Distance: {}".format(distance))
+                # So distance is shown instead of confidence
+                detection_msg.probability = distance
                 # Append in overall detection message
                 # if conf > self.confidence_th:
                 detection_results.bounding_boxes.append(detection_msg)
@@ -235,9 +237,10 @@ class DetectorManager():
                 self.classes_colors[label] = color
 
             # Create rectangle
+            print "y height: {}, shape: {}".format(y_p3-y_p1, imgOut.shape)
             cv2.rectangle(imgOut, (int(x_p1), int(y_p1)), (int(x_p3), int(y_p3)), (color[0],color[1],color[2]),thickness)
             text = ('{:s}: {:.3f}').format(label,confidence)
-            cv2.putText(imgOut, text, (int(x_p1), int(y_p1+20)), font, fontScale, (255,255,255), thickness ,cv2.LINE_AA)
+            cv2.putText(imgOut, text, (int(x_p1), int(y_p1-20)), font, fontScale, (255,255,255), thickness ,cv2.LINE_AA)
 
         # Publish visualization image
         image_msg = self.bridge.cv2_to_imgmsg(imgOut, "rgb8")
