@@ -48,6 +48,12 @@ class DetectorManager():
         self.camera_info_topic = rospy.get_param('~camera_info_topic', '/camera/rgb/image_raw')
         self.confidence_th = rospy.get_param('~confidence', 0.7)
         self.nms_th = rospy.get_param('~nms_th', 0.3)
+        self.use_distance = rospy.get_param('~use_distance', True)
+        rospy.loginfo("use_distance: {}".format(self.use_distance))
+        if self.use_distance:
+            rospy.loginfo("NOT calculating distance")
+        else:
+            rospy.loginfo("Calculating distance")
 
         # Load publisher topics
         self.detected_objects_topic = rospy.get_param('~detected_objects_topic')
@@ -89,7 +95,10 @@ class DetectorManager():
 
         # Define subscribers
         self.image_sub = message_filters.Subscriber(self.image_topic, Image, queue_size = 500, buff_size = 2**24)
-        self.info_sub = message_filters.Subscriber(self.camera_info_topic, CameraInfo, queue_size = 1, buff_size = 2**24)
+        if self.use_distance:
+            self.info_sub = message_filters.Subscriber(self.camera_info_topic, CameraInfo, queue_size = 1, buff_size = 2**24)
+        else:
+            self.info_sub = None
 
         ts = message_filters.TimeSynchronizer([self.image_sub, self.info_sub], 10)
         ts.registerCallback(self.imageCb)
@@ -102,7 +111,7 @@ class DetectorManager():
         # Spin
         rospy.spin()
 
-    def imageCb(self, imageData, cameraInfo):
+    def imageCb(self, imageData, cameraInfo=None):
         rospy.loginfo("Image pulled from topic.")
         # Convert the image to OpenCV
         try:
@@ -156,13 +165,14 @@ class DetectorManager():
                 rospy.loginfo("Class: " + class_str)
 
                 # Get distance
-                P = cameraInfo.P
-                fx = P[0]
-                fy = P[5]
-                bx = xmax - xmin
-                by = ymax - ymin
-                distance = calc_distance(fx, fy, bx, by, class_str)
-                rospy.loginfo("Distance: {}".format(distance))
+                if cameraInfo is not None:
+                    P = cameraInfo.P
+                    fx = P[0]
+                    fy = P[5]
+                    bx = xmax - xmin
+                    by = ymax - ymin
+                    distance = calc_distance(fx, fy, bx, by, class_str)
+                    rospy.loginfo("Distance: {}".format(distance))
                 # Append in overall detection message
                 detection_results.bounding_boxes.append(detection_msg)
 
