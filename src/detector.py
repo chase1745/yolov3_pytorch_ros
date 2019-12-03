@@ -165,6 +165,8 @@ class DetectorManager():
                     by = ymax - ymin
                     distance = calc_distance(fx, fy, bx, by, class_str)
                     rospy.loginfo("Distance: {}".format(distance))
+                    # So distance is shown instead of confidence
+                    detection_msg.probability = distance
                 # Append in overall detection message
                 detection_results.bounding_boxes.append(detection_msg)
 
