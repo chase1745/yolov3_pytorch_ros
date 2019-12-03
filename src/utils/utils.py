@@ -33,7 +33,9 @@ def calc_distance(fx, fy, bx, by, id):
     elif (id == "noLeftTurn") : #no left turn
         real_height = 2
 
+    print "fx: {}, fy: {}, focal: {}, real_height: {}".format(fx, fy, focal, real_height)
     distance = (real_height / by) * focal
+    print "distance: {}".format(distance)
     return distance
 
 def load_classes(path):
