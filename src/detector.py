@@ -168,7 +168,8 @@ class DetectorManager():
                     # So distance is shown instead of confidence
                     detection_msg.probability = distance
                 # Append in overall detection message
-                detection_results.bounding_boxes.append(detection_msg)
+                if conf > self.confidence_th:
+                    detection_results.bounding_boxes.append(detection_msg)
 
         # Publish detection results
         self.pub_.publish(detection_results)
