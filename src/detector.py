@@ -88,8 +88,8 @@ class DetectorManager():
         self.classes_colors = {}
 
         # Define subscribers
-        self.image_sub = message_filters.Subscriber(self.image_topic, Image)#, queue_size = 1, buff_size = 2**24)
-        self.info_sub = message_filters.Subscriber(self.camera_info_topic, CameraInfo)#, queue_size = 1, buff_size = 2**24)
+        self.image_sub = message_filters.Subscriber(self.image_topic, Image, queue_size = 500, buff_size = 2**24)
+        self.info_sub = message_filters.Subscriber(self.camera_info_topic, CameraInfo, queue_size = 1, buff_size = 2**24)
 
         ts = message_filters.TimeSynchronizer([self.image_sub, self.info_sub], 10)
         ts.registerCallback(self.imageCb)
@@ -126,7 +126,7 @@ class DetectorManager():
         # Get detections from network
         with torch.no_grad():
             detections = self.model(input_img)
-            detections = non_max_suppression(detections, 80, self.confidence_th, self.nms_th)
+            detections = non_max_suppression(detections, len(self.classes), self.confidence_th, self.nms_th)
 
         # Parse detections
         if detections[0] is not None:
