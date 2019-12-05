@@ -216,7 +216,7 @@ class DetectorManager():
         # Copy image and visualize
         imgOut = imgIn.copy()
         font = cv2.FONT_HERSHEY_SIMPLEX
-        fontScale = 0.8
+        fontScale = 0.6
         thickness = 2
         for index in range(len(output.bounding_boxes)):
             label = output.bounding_boxes[index].Class
@@ -228,15 +228,18 @@ class DetectorManager():
             distance = output.bounding_boxes[index].distance
 
             # Find class color
-            if label in self.classes_colors.keys():
-                color = self.classes_colors[label]
-            else:
-                # Generate a new color if first time seen this label
-                color = np.random.randint(0,255,3)
-                self.classes_colors[label] = color
+            # if label in self.classes_colors.keys():
+            #     color = self.classes_colors[label]
+            # else:
+            #     # Generate a new color if first time seen this label
+            #     color = np.random.randint(0,255,3)
+            #     self.classes_colors[label] = color
+
+            # Just use red for all classes since its easiest to see.
+            color = (100, 0, 0)
 
             # Create rectangle
-            cv2.rectangle(imgOut, (int(x_p1), int(y_p1)), (int(x_p3), int(y_p3)), (color[0], color[1], color[2]),thickness)
+            cv2.rectangle(imgOut, (int(x_p1), int(y_p1)), (int(x_p3), int(y_p3)), (color[0], color[1], color[2]), thickness)
             text = "{:s}\n conf: {:.3f}\n dist: {:s}".format(label, confidence, distance)
             text_size, _ = cv2.getTextSize(text, font, fontScale, thickness)
             line_height = text_size[1] + 5
