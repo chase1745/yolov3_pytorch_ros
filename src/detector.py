@@ -237,8 +237,16 @@ class DetectorManager():
 
             # Create rectangle
             cv2.rectangle(imgOut, (int(x_p1), int(y_p1)), (int(x_p3), int(y_p3)), (color[0], color[1], color[2]),thickness)
-            text = ('{:s}\n conf: {:.3f}\n dist: {:s}').format(label,confidence, distance)
-            cv2.putText(imgOut, text, (int(x_p1), int(y_p3+20)), font, fontScale, (color[0], color[1], color[2]), thickness ,cv2.LINE_AA)
+            text = "{:s}\n conf: {:.3f}\n dist: {:s}".format(label, confidence, distance)
+            text_size, _ = cv2.getTextSize(text, font, fontScale, thickness)
+            line_height = text_size[1] + 5
+            position = (int(x_p1), int(y_p3+20))
+            lineType = cv2.LINE_AA
+            x, y0 = position
+            for i, line in enumerate(text.split("\n")):
+                y = y0 + i * line_height
+                cv2.putText(imgOut, line, (x, y), font, fontScale, (color[0], color[1], color[2]), thickness, lineType)
+
 
         # Publish visualization image
         image_msg = self.bridge.cv2_to_imgmsg(imgOut, "rgb8")
