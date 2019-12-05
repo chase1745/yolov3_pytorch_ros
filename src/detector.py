@@ -162,12 +162,12 @@ class DetectorManager():
                     K = cameraInfo.K
                     fx = K[0]
                     fy = K[5]
-                bx = xmax_unpad - xmin_unpad
-                by = ymax_unpad - ymin_unpad
+                bx = int(xmax_unpad - xmin_unpad)
+                by = int(ymax_unpad - ymin_unpad)
                 distance = calc_distance(fx, fy, bx, by, class_str)
-                rospy.loginfo("Distance: {} m".format(distance))
+                rospy.loginfo("Distance: {} m".format(str(distance)))
                 # So distance is shown instead of confidence
-                detection_msg.distance = str(distance) + " m"
+                detection_msg.distance = str(distance) + "m"
                 # Append in overall detection message
                 detection_results.bounding_boxes.append(detection_msg)
 

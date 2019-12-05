@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 def calc_distance(fx, fy, bx, by, id):
-    focal = (fx + fy) / 2
+    focal = (int(fx) + int(fy)) / 2
     real_height = 0
 
     if (id == "stop"): #stop sign
