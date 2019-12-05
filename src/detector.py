@@ -115,7 +115,6 @@ class DetectorManager():
         detection_results = BoundingBoxes()
         detection_results.header = imageData.header
         detection_results.image_header = imageData.header
-        # rospy.loginfo("Timestamp: " + str(imageData.header.stamp))
 
         # Configure input
         input_img = self.imagePreProcessing(self.cv_image)
@@ -166,9 +165,9 @@ class DetectorManager():
                 bx = xmax_unpad - xmin_unpad
                 by = ymax_unpad - ymin_unpad
                 distance = calc_distance(fx, fy, bx, by, class_str)
-                rospy.loginfo("Distance: {}".format(distance))
+                rospy.loginfo("Distance: {} m".format(distance))
                 # So distance is shown instead of confidence
-                detection_msg.probability = distance
+                detection_msg.distance = str(distance) + " m"
                 # Append in overall detection message
                 detection_results.bounding_boxes.append(detection_msg)
 
@@ -226,6 +225,7 @@ class DetectorManager():
             x_p3 = output.bounding_boxes[index].xmax
             y_p3 = output.bounding_boxes[index].ymax
             confidence = output.bounding_boxes[index].probability
+            distance = output.bounding_boxes[index].distance
 
             # Find class color
             if label in self.classes_colors.keys():
@@ -236,9 +236,9 @@ class DetectorManager():
                 self.classes_colors[label] = color
 
             # Create rectangle
-            cv2.rectangle(imgOut, (int(x_p1), int(y_p1)), (int(x_p3), int(y_p3)), (color[0],color[1],color[2]),thickness)
-            text = ('{:s}: {:.3f}').format(label,confidence)
-            cv2.putText(imgOut, text, (int(x_p1), int(y_p1+20)), font, fontScale, (255,255,255), thickness ,cv2.LINE_AA)
+            cv2.rectangle(imgOut, (int(x_p1), int(y_p1)), (int(x_p3), int(y_p3)), (color[0], color[1], color[2]),thickness)
+            text = ('{:s}\n conf: {:.3f}\n dist: {:s}').format(label,confidence, distance)
+            cv2.putText(imgOut, text, (int(x_p1), int(y_p3+20)), font, fontScale, (color[0], color[1], color[2]), thickness ,cv2.LINE_AA)
 
         # Publish visualization image
         image_msg = self.bridge.cv2_to_imgmsg(imgOut, "rgb8")

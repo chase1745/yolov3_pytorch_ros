@@ -33,7 +33,9 @@ def calc_distance(fx, fy, bx, by, id):
     elif (id == "noLeftTurn") : #no left turn
         real_height = 2
 
-    distance = (real_height / by) * focal
+    # divide by 3.281 to get meters from feet
+    feet_in_a_meter = 3.281
+    distance = ((real_height/feet_in_a_meter) / by) * focal
     return distance
 
 def load_classes(path):
