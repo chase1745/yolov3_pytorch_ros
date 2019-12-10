@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>yolov3_pytorch_ros</name>
+  <name>autodrive_road_sign_recognition</name>
   <version>0.1.0</version>
   <description>Road sign recognition ROS package. CSCE 482 Capstone.</description>
 

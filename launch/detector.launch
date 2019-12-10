@@ -11,12 +11,13 @@
     <arg name="publish_image"	            default="true"/>
     <arg name="detected_objects_topic"      default="detected_objects_in_image"/>
     <arg name="detections_image_topic"      default="detections_image_topic"/>
+    <arg name="traffic_object_topic"      default="traffic_object_topic"/>
 
     <!-- Detection confidence -->
     <arg name="confidence"                  default="0.7"/>
 
     <!-- Node -->
-    <node name="detector_manager" pkg="yolov3_pytorch_ros" type="detector.py" output="screen" respawn="true">
+    <node name="detector_manager" pkg="autodrive_road_sign_recognition" type="detector.py" output="screen" respawn="true">
         <param name="image_topic"               value="$(arg image_topic)"/>
         <param name="camera_info_topic"         value="$(arg camera_info_topic)"/>
         <param name="weights_name"              value="$(arg weights_name)"/>
@@ -25,6 +26,7 @@
         <param name="publish_image"             value="$(arg publish_image)"/>
         <param name="detected_objects_topic"    value="$(arg detected_objects_topic)"/>
         <param name="detections_image_topic"    value="$(arg detections_image_topic)"/>
+        <param name="traffic_object_topic"      value="$(arg traffic_object_topic)"/>
         <param name="confidence"                value="$(arg confidence)"/>
     </node>
 </launch>

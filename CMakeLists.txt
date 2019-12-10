@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12)
-project(yolov3_pytorch_ros)
+project(autodrive_road_sign_recognition)
 
 find_package(catkin REQUIRED
   COMPONENTS
@@ -12,6 +12,7 @@ add_message_files(
   FILES
     BoundingBox.msg
     BoundingBoxes.msg
+    TrafficObject.msg
 )
 
 generate_messages(

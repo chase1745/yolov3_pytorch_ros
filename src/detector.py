@@ -16,11 +16,11 @@ from rospkg import RosPack
 from std_msgs.msg import UInt8
 from sensor_msgs.msg import Image, CameraInfo
 from geometry_msgs.msg import Polygon, Point32
-from yolov3_pytorch_ros.msg import BoundingBox, BoundingBoxes
+from autodrive_road_sign_recognition.msg import BoundingBox, BoundingBoxes, TrafficObject
 from cv_bridge import CvBridge, CvBridgeError
 
 package = RosPack()
-package_path = package.get_path('yolov3_pytorch_ros')
+package_path = package.get_path('autodrive_road_sign_recognition')
 
 # Deep learning imports
 import torch
@@ -52,6 +52,7 @@ class DetectorManager():
         # Load publisher topics
         self.detected_objects_topic = rospy.get_param('~detected_objects_topic')
         self.published_image_topic = rospy.get_param('~detections_image_topic')
+        self.traffic_object_topic = rospy.get_param('~traffic_object_topic')
 
         # Load other parameters
         config_name = rospy.get_param('~config_name', 'yolov3.cfg')
@@ -96,8 +97,12 @@ class DetectorManager():
         # ts.registerCallback(self.imageCb)
 
         # Define publishers
+        # Bounding boxes
         self.pub_ = rospy.Publisher(self.detected_objects_topic, BoundingBoxes, queue_size=10)
+        # Actual image with bounding boxes (if any detected)
         self.pub_viz_ = rospy.Publisher(self.published_image_topic, Image, queue_size=10)
+        # Traffic sign message for others to utilize
+        self.ts_pub_ = rospy.Publisher(self.traffic_object_topic, TrafficObject, queue_size=10)
         rospy.loginfo("Launched node for object detection")
 
         # Spin
@@ -170,6 +175,14 @@ class DetectorManager():
                 detection_msg.distance = str(distance) + "m"
                 # Append in overall detection message
                 detection_results.bounding_boxes.append(detection_msg)
+
+                traffic_object = TrafficObject()
+                traffic_object.header = imageData.header
+                traffic_object.distance = distance
+                traffic_object.confidence = conf
+                traffic_object.objectClass = class_str
+
+                self.ts_pub_.publish(traffic_object)
 
         # Publish detection results
         self.pub_.publish(detection_results)
