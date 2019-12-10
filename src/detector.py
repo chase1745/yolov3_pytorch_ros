@@ -89,12 +89,15 @@ class DetectorManager():
         self.classes_colors = {}
 
         # Define subscribers
-        self.image_sub = rospy.Subscriber(self.image_topic, Image, self.imageCb, queue_size = 500, buff_size = 2**24)
-        # self.image_sub = message_filters.Subscriber(self.image_topic, Image, queue_size = 500, buff_size = 2**24)
-        # self.info_sub = message_filters.Subscriber(self.camera_info_topic, CameraInfo, queue_size = 1, buff_size = 2**24)
+        # NOTE: if the rosbag doesn't have a camera_info_topic (see http://docs.ros.org/melodic/api/sensor_msgs/html/msg/CameraInfo.html)
+        # then uncomment line 94, and comment out 95:99 so the node isn't waiting on the cameraInfo topic. If there's no cameraInfo it uses
+        # a default fx and fy defined on line 168.
+        # self.image_sub = rospy.Subscriber(self.image_topic, Image, self.imageCb, queue_size = 500, buff_size = 2**24)
+        self.image_sub = message_filters.Subscriber(self.image_topic, Image, queue_size = 500, buff_size = 2**24)
+        self.info_sub = message_filters.Subscriber(self.camera_info_topic, CameraInfo, queue_size = 1, buff_size = 2**24)
 
-        # ts = message_filters.TimeSynchronizer([self.image_sub, self.info_sub], 10)
-        # ts.registerCallback(self.imageCb)
+        ts = message_filters.TimeSynchronizer([self.image_sub, self.info_sub], 10)
+        ts.registerCallback(self.imageCb)
 
         # Define publishers
         # Bounding boxes
